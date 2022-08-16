@@ -1,13 +1,14 @@
-package com.example.onedaypiece.challenge.dao;
+package com.example.onedaypiece.wep.challenge.dao;
 
-import com.example.onedaypiece.challenge.domain.challenge.Challenge;
+import com.example.onedaypiece.wep.challenge.domain.Challenge;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.example.onedaypiece.challenge.domain.challenge.QChallenge.challenge;
+import static com.example.onedaypiece.wep.challenge.domain.QChallenge.challenge;
+
 @RequiredArgsConstructor
 @Repository
 public class ChallengeQueryRepository {

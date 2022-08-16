@@ -1,8 +1,8 @@
-package com.example.onedaypiece.challenge.service;
+package com.example.onedaypiece.wep.challenge.service;
 
-import com.example.onedaypiece.challenge.dao.ChallengeQueryRepository;
-import com.example.onedaypiece.challenge.dao.ChallengeRepository;
-import com.example.onedaypiece.challenge.domain.challenge.Challenge;
+import com.example.onedaypiece.wep.challenge.dao.ChallengeQueryRepository;
+import com.example.onedaypiece.wep.challenge.dao.ChallengeRepository;
+import com.example.onedaypiece.wep.challenge.domain.Challenge;
 import com.example.onedaypiece.exception.DataNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
-import static com.example.onedaypiece.challenge.domain.challenge.Challenge.createChallenge;
 
 @AllArgsConstructor
 @Service
@@ -39,12 +37,14 @@ public class ChallengeService {
 
     // 챌린지 생성
     @Transactional
-    public Integer postChallenge(Challenge challenge) {
-        Challenge postChallenge = createChallenge(challenge);
-        challengeRepository.save(challenge);
+    public void postChallenge(Challenge challenge) {
+        Challenge postChallenge = Challenge.createChallenge(challenge);
+        challengeRepository.save(postChallenge);
+    }
 
-        Integer challengeId = postChallenge.getChallengeId();
-        return challengeId;
+    @Transactional
+    public void deleteChallenge(Integer challengeId) {
+
     }
 
 }

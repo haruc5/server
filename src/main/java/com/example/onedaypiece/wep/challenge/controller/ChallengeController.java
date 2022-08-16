@@ -1,7 +1,7 @@
-package com.example.onedaypiece.challenge.controller;
+package com.example.onedaypiece.wep.challenge.controller;
 
-import com.example.onedaypiece.challenge.domain.challenge.Challenge;
-import com.example.onedaypiece.challenge.service.ChallengeService;
+import com.example.onedaypiece.wep.challenge.domain.Challenge;
+import com.example.onedaypiece.wep.challenge.service.ChallengeService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,17 +15,12 @@ public class ChallengeController {
     private final ChallengeService challengeService;
 
     @GetMapping("/detail/{challengeId}")
-    public String getChallengeDetail(@PathVariable Integer challengeId) {
-        System.out.println("challengeId");
-        System.out.println(challengeId);
-        Challenge challenge = this.challengeService.getChallenge(challengeId);
-        // 조회수 기능 구현
-        return "challenge";
+    public Challenge getChallengeDetail(@PathVariable Integer challengeId) {
+        return this.challengeService.getChallenge(challengeId);
     }
 
     @GetMapping("/list")
-    @ResponseBody
-    public List<Challenge> getChallenge(){
+    public List<Challenge> getChallenges(){
         return this.challengeService.getChallenges();
     }
 

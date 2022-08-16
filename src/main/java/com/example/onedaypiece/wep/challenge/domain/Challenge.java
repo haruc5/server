@@ -1,5 +1,6 @@
-package com.example.onedaypiece.challenge.domain.challenge;
+package com.example.onedaypiece.wep.challenge.domain;
 
+import com.example.onedaypiece.wep.challengeDetail.domain.UpdateChallengeDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,12 @@ public class Challenge implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate challengeEnd;
 
+    @Column(name = "challenge_status", nullable = false)
+    private boolean challengeStatus; // 삭제 여부
+
+    @Column(name = "challenge_progress", nullable = false)
+    private Integer challengeProgress;
+
     @Column(name = "challenge_auth" ,nullable = false)
     @Enumerated(value = EnumType.STRING)
     private ChallengeAuth challengeAuth;
@@ -62,18 +69,20 @@ public class Challenge implements Serializable {
     public Challenge(String challengeTitle, ChallengeCategory challengeCategory,
                     String challengeImgUrl, String challengeHoliday,
                     LocalDate challengeStart, LocalDate challengeEnd, ChallengeAuth challengeAuth, String challengeAuthMethod,
-                    String challengeContent, String ChallengePassword, Integer viewCount) {
+                    String challengeContent, String ChallengePassword) {
         this.challengeTitle = challengeTitle;
         this.challengeCategory = challengeCategory;
         this.challengeImgUrl = challengeImgUrl;
         this.challengeHoliday = challengeHoliday;
         this.challengeStart = challengeStart;
         this.challengeEnd = challengeEnd;
+        this.challengeStatus = true;
+        this.challengeProgress = 0;
         this.challengeAuth = challengeAuth;
         this.challengeAuthMethod = challengeAuthMethod;
         this.challengeContent = challengeContent;
         this.ChallengePassword = ChallengePassword;
-        this.viewCount = viewCount;
+        this.viewCount = 0;
         if (ChronoUnit.DAYS.between(challengeStart, challengeEnd) <= 7) {
             this.weekTag = "1주";
         } else if (ChronoUnit.DAYS.between(challengeStart, challengeEnd) <= 14) {
@@ -83,8 +92,6 @@ public class Challenge implements Serializable {
         } else {
             this.weekTag = "4주";
         }
-
-//
     }
 
     public static Challenge createChallenge(Challenge challenge) {
@@ -101,4 +108,20 @@ public class Challenge implements Serializable {
                 .ChallengePassword(challenge.getChallengePassword())
                 .build();
     }
+
+    public void setChallengeStatusFalse() {
+        this.challengeStatus = false;
+    }
+
+    public void updateChallengeProgress(Integer challengeProgress) {
+        this.challengeProgress = challengeProgress;
+    }
+
+    public void updateChallenge(UpdateChallengeDto updateChallengeDto) {
+        this.challengeTitle = updateChallengeDto.getChallengeTitle();
+        this.challengeImgUrl = updateChallengeDto.getChallengeImgUrl();
+        this.challengeHoliday = updateChallengeDto.getChallengeHoliday();
+
+    }
+
 }

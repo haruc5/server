@@ -1,4 +1,4 @@
-package com.example.onedaypiece.challenge.domain.challenge;
+package com.example.onedaypiece.wep.challenge.domain;
 
 public enum ChallengeCategory {
     NODRINK,
