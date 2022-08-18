@@ -1,6 +1,6 @@
 package com.example.onedaypiece.wep.posting.domain;
 
-import com.example.onedaypiece.wep.certification.CertificationQueryDto;
+import com.example.onedaypiece.wep.certification.domain.CertificationQueryDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +21,9 @@ public class PostingDto {
     private Integer postingCount;
 
     @Builder
-    public PostingDto(Integer postingId, String postingImg, String postingContent,                              boolean postingModifyOk, LocalDateTime createdAt, LocalDateTime modifiedAt,
-                              Integer postingCount) {
+    public PostingDto(Integer postingId, String postingImg, String postingContent,
+                      boolean postingModifyOk, LocalDateTime createdAt, LocalDateTime modifiedAt,
+                      Integer postingCount) {
         this.postingId = postingId;
         this.postingImg = postingImg;
         this.postingContent = postingContent;

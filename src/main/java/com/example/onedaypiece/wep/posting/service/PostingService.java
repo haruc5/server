@@ -1,9 +1,9 @@
 package com.example.onedaypiece.wep.posting.service;
 
 import com.example.onedaypiece.exception.ApiRequestException;
-import com.example.onedaypiece.wep.certification.CertificationQueryDto;
-import com.example.onedaypiece.wep.certification.CertificationQueryRepository;
-import com.example.onedaypiece.wep.certification.CertificationRepository;
+import com.example.onedaypiece.wep.certification.dao.CertificationQueryRepository;
+import com.example.onedaypiece.wep.certification.dao.CertificationRepository;
+import com.example.onedaypiece.wep.certification.domain.CertificationQueryDto;
 import com.example.onedaypiece.wep.challenge.dao.ChallengeRepository;
 import com.example.onedaypiece.wep.challenge.domain.Challenge;
 import com.example.onedaypiece.wep.posting.dao.PostingQueryRepository;
@@ -31,7 +31,7 @@ public class PostingService {
     private final ChallengeRepository challengeRepository;
     private final PostingQueryRepository postingQueryRepository;
 
-    //포스트 저장
+    //인증 저장
     public Integer createPosting(CreatePostingDto createPostingDto) {
         Challenge challenge = getChallenge(createPostingDto.getChallengeId());
         Posting posting = Posting.createPosting(createPostingDto, challenge);
@@ -45,7 +45,7 @@ public class PostingService {
         return posting.getPostingId();
     }
 
-    //포스트 리스트
+    //인증 리스트
     public PostingListDto getPosting(Integer page, Integer challengeId) {
 
         Pageable pageable = PageRequest.of(page - 1, 6);
@@ -62,11 +62,48 @@ public class PostingService {
         return PostingListDto.createPostingListDto(postingResponseDtoList, postingList.hasNext());
     }
 
+    //인증 업데이트
+    public Integer updatePosting(Integer postingId, UpdatePostingDto updatePostingDto) {
+
+        Posting posting = getPosting(postingId);
+        posting.updatePosting(updatePostingDto);
+
+        return posting.getPostingId();
+    }
+
+    //포스트 삭제
+    public Integer deletePosting(Integer postingId) {
+        Posting posting = getPosting(postingId);
+
+        // 인증 검사.
+        isApprovalTrue(posting);
+
+        System.out.println("posting = " + posting.getPostingId());
+
+        posting.deletePosting();
+
+        return posting.getPostingId();
+    }
+    private Posting getPosting(Integer postingId) {
+        return postingRepository.findById(postingId)
+                .orElseThrow(() -> new ApiRequestException("등록된 포스트가 없습니다."));
+    }
     private Challenge getChallenge(Integer challengeId) {
         return challengeRepository.findByChallengeStatusTrueAndChallengeId(challengeId)
                 .orElseThrow(() -> new ApiRequestException("등록된 챌린지가 없습니다."));
     }
 
+    //인증 게시물 확인
+    private void isApprovalTrue(Posting posting) {
+        // 혼자서 진행하는 챌린지의 경우 수정 할 수 있게 하기위해 postingCount의 값이 1이 아닐 경우로 한정
+        if (posting.getPostingCount() != 1) {
+            if (posting.isPostingApproval()) {
+                throw new ApiRequestException("이미 인증된 게시글은 삭제할 수 없습니다.");
+            }
+        }
+    }
+
+    //주말 챌린지 작성 불가
     private void checkChallengeHoliday(LocalDateTime now, Challenge challenge) {
 
         boolean sat = 6 == now.getDayOfWeek().getValue();

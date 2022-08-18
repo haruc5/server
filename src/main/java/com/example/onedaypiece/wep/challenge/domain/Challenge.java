@@ -1,9 +1,10 @@
 package com.example.onedaypiece.wep.challenge.domain;
 
-import com.example.onedaypiece.wep.challengeDetail.domain.UpdateChallengeDto;
+import com.example.onedaypiece.commom.Timestamped;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -13,8 +14,9 @@ import java.time.temporal.ChronoUnit;
 
 @NoArgsConstructor
 @Entity
-@Data
-public class Challenge implements Serializable {
+@Getter
+@Setter
+public class Challenge extends Timestamped implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer challengeId;
@@ -57,7 +59,7 @@ public class Challenge implements Serializable {
     private String challengeContent;
 
     @Column
-    private String ChallengePassword;
+    private String challengePassword;
 
     @Column(columnDefinition = "integer default 0")
     private Integer viewCount;
@@ -67,9 +69,9 @@ public class Challenge implements Serializable {
 
     @Builder
     public Challenge(String challengeTitle, ChallengeCategory challengeCategory,
-                    String challengeImgUrl, String challengeHoliday,
-                    LocalDate challengeStart, LocalDate challengeEnd, ChallengeAuth challengeAuth, String challengeAuthMethod,
-                    String challengeContent, String ChallengePassword) {
+                     String challengeImgUrl, String challengeHoliday,
+                     LocalDate challengeStart, LocalDate challengeEnd, ChallengeAuth challengeAuth, String challengeAuthMethod,
+                     String challengeContent, String challengePassword) {
         this.challengeTitle = challengeTitle;
         this.challengeCategory = challengeCategory;
         this.challengeImgUrl = challengeImgUrl;
@@ -81,7 +83,7 @@ public class Challenge implements Serializable {
         this.challengeAuth = challengeAuth;
         this.challengeAuthMethod = challengeAuthMethod;
         this.challengeContent = challengeContent;
-        this.ChallengePassword = ChallengePassword;
+        this.challengePassword = challengePassword;
         this.viewCount = 0;
         if (ChronoUnit.DAYS.between(challengeStart, challengeEnd) <= 7) {
             this.weekTag = "1주";
@@ -105,7 +107,7 @@ public class Challenge implements Serializable {
                 .challengeAuth(challenge.getChallengeAuth())
                 .challengeAuthMethod(challenge.getChallengeAuthMethod())
                 .challengeContent(challenge.getChallengeContent())
-                .ChallengePassword(challenge.getChallengePassword())
+                .challengePassword(challenge.getChallengePassword())
                 .build();
     }
 
@@ -119,9 +121,24 @@ public class Challenge implements Serializable {
 
     public void updateChallenge(UpdateChallengeDto updateChallengeDto) {
         this.challengeTitle = updateChallengeDto.getChallengeTitle();
+        this.challengeCategory = updateChallengeDto.getChallengeCategory();
         this.challengeImgUrl = updateChallengeDto.getChallengeImgUrl();
         this.challengeHoliday = updateChallengeDto.getChallengeHoliday();
-
+        this.challengeStart = updateChallengeDto.getChallengeStart();
+        this.challengeEnd = updateChallengeDto.getChallengeEnd();
+        this.challengeAuth = updateChallengeDto.getChallengeAuth();
+        this.challengeAuthMethod = updateChallengeDto.getChallengeAuthMethod();
+        this.challengePassword = updateChallengeDto.getChallengePassword();
+        this.challengeContent = updateChallengeDto.getChallengeContent();
+        if (ChronoUnit.DAYS.between(challengeStart, challengeEnd) <= 7) {
+            this.weekTag = "1주";
+        } else if (ChronoUnit.DAYS.between(challengeStart, challengeEnd) <= 14) {
+            this.weekTag = "2주";
+        } else if (ChronoUnit.DAYS.between(challengeStart, challengeEnd) <= 21) {
+            this.weekTag = "3주";
+        } else {
+            this.weekTag = "4주 이상";
+        }
     }
 
 }

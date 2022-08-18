@@ -1,4 +1,4 @@
-package com.example.onedaypiece.wep.certification;
+package com.example.onedaypiece.wep.certification.domain;
 
 
 import com.example.onedaypiece.wep.posting.domain.Posting;

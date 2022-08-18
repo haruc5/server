@@ -1,4 +1,4 @@
-package com.example.onedaypiece.wep.certification;
+package com.example.onedaypiece.wep.certification.domain;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;

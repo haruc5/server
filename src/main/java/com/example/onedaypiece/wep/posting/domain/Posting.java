@@ -15,6 +15,7 @@ public class Posting extends Timestamped {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @Column(name = "posting_Id")
     private Integer postingId;
 
     @Column(columnDefinition="TEXT")
@@ -25,6 +26,9 @@ public class Posting extends Timestamped {
 
     @Column
     private boolean postingStatus;
+
+    @Column
+    private boolean postingApproval;
 
     @Column
     private boolean postingModifyOk;
@@ -41,6 +45,7 @@ public class Posting extends Timestamped {
         this.postingImg = postingImg;
         this.postingContent = postingContent;
         this.postingStatus = true;
+        this.postingApproval=false;
         this.postingModifyOk = true;
         this.postingCount = 0;
         this.challenge = challenge;
@@ -61,6 +66,10 @@ public class Posting extends Timestamped {
     }
     public void deletePosting() {
         this.postingStatus =false;
+    }
+
+    public void updateApproval(boolean isApproval) {
+        this.postingApproval = isApproval;
     }
 
     public void addCount() {

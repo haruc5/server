@@ -1,20 +1,20 @@
-package com.example.onedaypiece.wep.challengeDetail.domain;
+package com.example.onedaypiece.wep.challenge.domain;
 
-import com.example.onedaypiece.wep.challenge.domain.ChallengeAuth;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
 public class UpdateChallengeDto {
-    private Long challengeId;
+    private Integer challengeId;
     private String challengeTitle;
+    private ChallengeCategory challengeCategory;
     private String challengeImgUrl;
     private String challengeHoliday;
-    private LocalDateTime challengeStart;
-    private LocalDateTime challengeEnd;
+    private LocalDate challengeStart;
+    private LocalDate challengeEnd;
     private ChallengeAuth challengeAuth;
     private String challengeAuthMethod;
     private String challengePassword;
