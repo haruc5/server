@@ -11,14 +11,15 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/detail")
+@RequestMapping("/api/posting")
 public class PostingController {
     private final PostingService postingService;
 
-    @PostMapping("/posting")
-    public String createPosting(@RequestBody @Valid CreatePostingDto createPostingDto) {
+    @PostMapping("/{challengeId}/create")
+    public String createPosting(@RequestBody @Valid CreatePostingDto createPostingDto,
+                                @PathVariable Integer challengeId) {
         postingService.createPosting(createPostingDto);
-        return "인증 완료";
+        return challengeId+"인증 완료";
     }
 
     //포스트 리스트
@@ -27,14 +28,14 @@ public class PostingController {
         return postingService.getPosting(page, challengeId);
     }
     //포스트 업데이트
-    @PutMapping("/posting/update/{postingId}")
+    @PutMapping("/{postingId}/update")
     public Integer updatePosting(@PathVariable Integer postingId,
-                              @RequestBody UpdatePostingDto updatePostingDto){
+                                 @RequestBody UpdatePostingDto updatePostingDto){
         return postingService.updatePosting(postingId, updatePostingDto);
     }
 
     //포스트 삭제
-    @DeleteMapping("/posting/delete/{postingId}")
+    @DeleteMapping("/{postingId}/delete")
     public Integer deletePosting(@PathVariable Integer postingId) {
         return postingService.deletePosting(postingId);
     }

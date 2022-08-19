@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @ToString(exclude = {"challenge"})
+@Table(indexes = {@Index(name = "idx_detail_status", columnList = "challenge_detail_status")})
 public class ChallengeDetail extends Timestamped {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
