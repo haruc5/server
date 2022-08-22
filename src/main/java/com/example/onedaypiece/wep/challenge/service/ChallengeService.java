@@ -66,9 +66,10 @@ public class ChallengeService {
     @Transactional
     public void deleteChallenge(Integer challengeId) {
         Challenge challenge = challengeChecker(challengeId);
-//      deleteChallengeException(challenge);
 
         List<ChallengeDetail> detailList = challengeDetailRepository.findAllByChallengeAndChallengeDetailStatusTrue(challenge);
+        challenge.setChallengeStatusFalse();
+        challenge.updateChallengeProgress(3);
         detailList.forEach(ChallengeDetail::setStatusFalse);
     }
 
@@ -77,13 +78,4 @@ public class ChallengeService {
                 .orElseThrow(() -> new ApiRequestException("존재하지 않는 챌린지입니다"));
     }
 
-//    private void deleteChallengeException(Challenge challenge) {
-//
-//        if (LocalDate.now().isBefore(challenge.getChallengeStart())) {
-//            challenge.setChallengeStatusFalse();
-//            challenge.updateChallengeProgress(3);
-//        } else {
-//            throw new ApiRequestException("이미 시작된 챌린지는 삭제할 수 없습니다.");
-//        }
-//    }
 }

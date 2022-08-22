@@ -35,8 +35,9 @@ public class PostingController {
     }
 
     //포스트 삭제
-    @DeleteMapping("/{postingId}/delete")
-    public Integer deletePosting(@PathVariable Integer postingId) {
+    @DeleteMapping("/{page}/{challengeId}/{postingId}/delete")
+    public Integer deletePosting(@PathVariable int page, @PathVariable Integer challengeId, @PathVariable Integer postingId) {
+        postingService.getPosting(page, challengeId);
         return postingService.deletePosting(postingId);
     }
 }

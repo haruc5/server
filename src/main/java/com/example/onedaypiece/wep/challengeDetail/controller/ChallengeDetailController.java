@@ -14,8 +14,9 @@ public class ChallengeDetailController {
 
     // 챌린지 신청
     @PostMapping("/challenge-request")
-    public void requestChallenge(@RequestBody ChallengeDetailDto challengeDetailDto) {
+    public String requestChallenge(@RequestBody ChallengeDetailDto challengeDetailDto) {
         challengeDetailService.requestChallenge((challengeDetailDto));
+        return "신청 완료";
     }
 
     // 챌린지 포기
@@ -38,12 +39,12 @@ public class ChallengeDetailController {
     }
 
     //소팅으로 검색
-    @GetMapping("/search/{word}/{categoryName}/{period}/{progress}/{page}")
+    @GetMapping("/search/{word}/{challengeCategory}/{period}/{progress}/{page}")
     public ChallengeListDto getChallengeSearchByCategoryNameAndPeriod(@PathVariable String word,
-                                                                              @PathVariable String categoryName,
+                                                                              @PathVariable String challengeCategory,
                                                                               @PathVariable int period,
                                                                               @PathVariable int progress,
                                                                               @PathVariable int page) {
-        return challengeDetailService.getChallengeBySearch(word, categoryName, period, progress, page);
+        return challengeDetailService.getChallengeBySearch(word, challengeCategory, period, progress, page);
     }
 }

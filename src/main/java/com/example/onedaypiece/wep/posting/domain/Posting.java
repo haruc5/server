@@ -5,11 +5,13 @@ import com.example.onedaypiece.wep.challenge.domain.Challenge;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
+@Setter
 @Entity
 public class Posting extends Timestamped {
 
@@ -45,7 +47,7 @@ public class Posting extends Timestamped {
         this.postingImg = postingImg;
         this.postingContent = postingContent;
         this.postingStatus = true;
-        this.postingApproval=false;
+        this.postingApproval = false;
         this.postingModifyOk = true;
         this.postingCount = 0;
         this.challenge = challenge;
@@ -65,7 +67,7 @@ public class Posting extends Timestamped {
 
     }
     public void deletePosting() {
-        this.postingStatus =false;
+        this.postingStatus = false;
     }
 
     public void updateApproval(boolean isApproval) {

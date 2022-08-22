@@ -77,9 +77,8 @@ public class PostingService {
 
         // 인증 검사.
         isApprovalTrue(posting);
-
         System.out.println("posting = " + posting.getPostingId());
-
+        posting.updateApproval(false);
         posting.deletePosting();
 
         return posting.getPostingId();

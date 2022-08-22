@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.example.onedaypiece.wep.challenge.domain.QChallenge.challenge;
 import static com.example.onedaypiece.wep.challengeDetail.domain.QChallengeDetail.challengeDetail;
 
 @RequiredArgsConstructor
@@ -19,14 +20,24 @@ public class ChallengeDetailQueryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-//    private List<ChallengeDetail> findAllByChallenge(List<Challenge> challengeList) {
-//        return queryFactory.selectFrom(challengeDetail)
-//                .join(challengeDetail.challenge,challenge)
-//                .where(challengeDetail.challengeDetailStatus.isTrue(),
-//                        challengeDetail.challenge.challengeStatus.isTrue(),
-//                        challengeDetail.challenge.in(challengeList))
-//                .fetch();
-//    }
+    public List<ChallengeDetail> findAllByChallenge(List<Challenge> challengeList) {
+        return queryFactory.selectFrom(challengeDetail)
+                .join(challengeDetail.challenge,challenge)
+                .where(challengeDetail.challengeDetailStatus.isTrue(),
+                        challengeDetail.challenge.challengeStatus.isTrue(),
+                        challengeDetail.challenge.in(challengeList))
+                .fetch();
+    }
+
+    public List<ChallengeDetail> findAllByProgress(Integer progress) {
+        return queryFactory
+                .selectFrom(challengeDetail)
+                .join(challengeDetail.challenge, challenge).fetchJoin()
+                .where(challengeDetail.challengeDetailStatus.isTrue(),
+                        challengeDetail.challenge.challengeStatus.isTrue(),
+                        challengeDetail.challenge.challengeProgress.eq(progress))
+                .fetch();
+    }
 
     public List<ChallengeDetail> findAllByChallengeList(Slice<Challenge> challengeList){
         return queryFactory.select(challengeDetail)

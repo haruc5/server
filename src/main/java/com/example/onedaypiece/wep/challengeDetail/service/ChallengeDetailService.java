@@ -10,6 +10,12 @@ import com.example.onedaypiece.wep.challengeDetail.dao.ChallengeDetailQueryRepos
 import com.example.onedaypiece.wep.challengeDetail.dao.ChallengeDetailRepository;
 import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail;
 import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetailDto;
+import com.example.onedaypiece.wep.proceed.end.ChallengeEndDto;
+import com.example.onedaypiece.wep.proceed.end.EndDto;
+import com.example.onedaypiece.wep.proceed.proceed.ChallengeProceedDto;
+import com.example.onedaypiece.wep.proceed.proceed.ProceedDto;
+import com.example.onedaypiece.wep.proceed.scheduled.ChallengeScheduledDto;
+import com.example.onedaypiece.wep.proceed.scheduled.ScheduledDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +28,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.example.onedaypiece.wep.challenge.domain.ChallengeDto.createChallengeDto;
+import static com.example.onedaypiece.wep.proceed.end.ChallengeEndDto.createEndDto;
+import static com.example.onedaypiece.wep.proceed.proceed.ChallengeProceedDto.createProceedDto;
+import static com.example.onedaypiece.wep.proceed.scheduled.ChallengeScheduledDto.createScheduledDto;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Service
@@ -32,7 +41,7 @@ public class ChallengeDetailService {
     private final ChallengeRepository challengeRepository;
     private final ChallengeQueryRepository challengeQueryRepository;
 
-    final int SEARCH_SIZE = 8;
+    final int SEARCH_SIZE = 12;
 
     @Transactional
     public void requestChallenge(ChallengeDetailDto challengeDetailDto) {
@@ -91,5 +100,56 @@ public class ChallengeDetailService {
                 .collect(Collectors.toList());
 
         return ChallengeListDto.createChallengeListDto(challengeDtoList, challengeList.hasNext());
+    }
+
+    // 진행중인 챌린지
+    public ChallengeProceedDto getProceed(){
+        //본인이 참여한 챌린지 기록리스트  1: 진행 예정, 2: 진행 중, 3 : 진행 완료
+        List<ChallengeDetail> targetList = challengeDetailQueryRepository.findAllByProgress(2);
+
+        // 본인이 참여한 챌린지 기록리스트 -> 챌린지 가져옴
+        List<Challenge> proceeding = targetList.stream()
+                .map(challengeDetail -> challengeDetail.getChallenge()).collect(Collectors.toList());
+
+
+        // 본인이 참여한 챌린지 리스트 -> 가공
+        List<ChallengeDetail> challengeDetailList= challengeDetailQueryRepository.findAllByChallenge(proceeding);
+        List<ProceedDto> proceedingResult = proceeding.stream()
+                .map(challenge-> new ProceedDto(challenge))
+                .collect(Collectors.toList());
+
+        return createProceedDto(proceedingResult);
+    }
+
+    // 예정인 챌린지
+    public ChallengeScheduledDto getScheduled(){
+        //본인이 참여한 챌린지 리스트  1: 진행 예정, 2: 진행 중, 3 : 진행 완료
+        List<ChallengeDetail> targetList = challengeDetailQueryRepository.findAllByProgress(1);
+
+        List<Challenge> scheduled = targetList.stream()
+                .map(challengeDetail -> challengeDetail.getChallenge()).collect(Collectors.toList());
+
+        List<ChallengeDetail> challengeDetailList = challengeDetailQueryRepository.findAllByChallenge(scheduled);
+        List<ScheduledDto> scheduledList = scheduled.stream()
+                .map(challenge -> new ScheduledDto(challenge))
+                .collect(Collectors.toList());
+
+        return createScheduledDto(scheduledList);
+    }
+
+    // 종료된 챌린지
+    public ChallengeEndDto getEnd(){
+        //본인이 참여한 챌린지 리스트  1: 진행 예정, 2: 진행 중, 3 : 진행 완료
+        List<ChallengeDetail> targetList = challengeDetailQueryRepository.findAllByProgress(3);
+
+        List<Challenge> end = targetList.stream()
+                .map(challengeDetail -> challengeDetail.getChallenge()).collect(Collectors.toList());
+
+        List<ChallengeDetail> challengeDetailList = challengeDetailQueryRepository.findAllByChallenge(end);
+        List<EndDto> endList = end.stream()
+                .map(challenge -> new EndDto(challenge))
+                .collect(Collectors.toList());
+
+        return createEndDto(endList);
     }
 }
