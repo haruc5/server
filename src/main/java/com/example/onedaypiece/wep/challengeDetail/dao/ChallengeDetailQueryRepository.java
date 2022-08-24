@@ -60,7 +60,7 @@ public class ChallengeDetailQueryRepository {
                         challengeDetail.challenge.challengeCategory.ne(ChallengeCategory.OFFICIAL),
                         challengeDetail.challenge.challengePassword.eq(""))
                 .groupBy(challengeDetail.challenge.challengeId)
-                .orderBy(challengeDetail.challenge.challengeId.count().desc())
+                .orderBy(challengeDetail.challenge.viewCount.desc())
                 .offset(page.getOffset())
                 .limit(page.getPageSize())
                 .fetch();

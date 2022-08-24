@@ -18,8 +18,9 @@ public class PostingController {
     @PostMapping("/{challengeId}/create")
     public String createPosting(@RequestBody @Valid CreatePostingDto createPostingDto,
                                 @PathVariable Integer challengeId) {
+        System.out.println(challengeId);
         postingService.createPosting(createPostingDto);
-        return challengeId+"인증 완료";
+        return "challenge ("+challengeId+") posting completed";
     }
 
     //포스트 리스트

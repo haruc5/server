@@ -29,6 +29,13 @@ public class ChallengeQueryRepository {
                 .fetchOne());
     }
 
+    public Long deleteAllStatusFalse() {
+        return queryFactory
+                .delete(challenge)
+                .where(challenge.challengeStatus.isFalse())
+                .execute();
+    }
+
     public Slice<Challenge> findAllByWord(String words, Pageable page){
         List<Challenge> challengeList = queryFactory
                 .selectFrom(challenge)
@@ -63,6 +70,16 @@ public class ChallengeQueryRepository {
                 .fetch();
 
         return RepositoryHelper.toSlice(challengeList, pageable);
+    }
+
+    public List<Challenge> findAllByOfficialChallenge() {
+        return queryFactory
+                .selectFrom(challenge)
+                .where(challenge.challengeStatus.isTrue(),
+                        challenge.challengeProgress.eq(1),
+                        challenge.challengeCategory.eq(ChallengeCategory.OFFICIAL),
+                        challenge.challengePassword.eq(""))
+                .fetch();
     }
 
     private Predicate[] predicateByCategoryAndPeriod(String word, String challengeCategory,

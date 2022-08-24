@@ -9,18 +9,15 @@ import lombok.NoArgsConstructor;
 public class ChallengeDto {
     private Challenge challenge;
 
-    private Integer challengeMember;
 
     @Builder
-    public ChallengeDto(Challenge challenge, Integer challengeMember) {
+    public ChallengeDto(Challenge challenge) {
         this.challenge = challenge;
-        this.challengeMember = challengeMember;
     }
 
     public static ChallengeDto createChallengeDto(Challenge challenge, Integer challengeMember) {
         return ChallengeDto.builder()
                 .challenge(challenge)
-                .challengeMember(challengeMember)
                 .build();
     }
 }

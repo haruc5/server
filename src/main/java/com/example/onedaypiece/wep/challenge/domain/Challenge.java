@@ -1,11 +1,11 @@
 package com.example.onedaypiece.wep.challenge.domain;
 
 import com.example.onedaypiece.commom.Timestamped;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -35,11 +35,11 @@ public class Challenge extends Timestamped implements Serializable {
     private String challengeHoliday;
 
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate challengeStart;
 
     @Column(nullable = false)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate challengeEnd;
 
     @Column(name = "challenge_status", nullable = false)

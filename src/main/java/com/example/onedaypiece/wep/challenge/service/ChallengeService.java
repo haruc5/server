@@ -4,18 +4,22 @@ import com.example.onedaypiece.exception.ApiRequestException;
 import com.example.onedaypiece.exception.DataNotFoundException;
 import com.example.onedaypiece.wep.challenge.dao.ChallengeQueryRepository;
 import com.example.onedaypiece.wep.challenge.dao.ChallengeRepository;
-import com.example.onedaypiece.wep.challenge.domain.Challenge;
-import com.example.onedaypiece.wep.challenge.domain.UpdateChallengeDto;
+import com.example.onedaypiece.wep.challenge.domain.*;
 import com.example.onedaypiece.wep.challengeDetail.dao.ChallengeDetailQueryRepository;
 import com.example.onedaypiece.wep.challengeDetail.dao.ChallengeDetailRepository;
 import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static com.example.onedaypiece.wep.challenge.domain.ChallengeCategory.*;
+import static com.example.onedaypiece.wep.challenge.domain.ChallengeMainDto.createChallengeMainDto;
+import static com.example.onedaypiece.wep.challenge.domain.ChallengeSourceDto.createChallengeSourceDto;
 import static com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail.createChallengeDetail;
 
 @RequiredArgsConstructor
@@ -68,14 +72,68 @@ public class ChallengeService {
         Challenge challenge = challengeChecker(challengeId);
 
         List<ChallengeDetail> detailList = challengeDetailRepository.findAllByChallengeAndChallengeDetailStatusTrue(challenge);
-        challenge.setChallengeStatusFalse();
-        challenge.updateChallengeProgress(3);
         detailList.forEach(ChallengeDetail::setStatusFalse);
+        challenge.updateChallengeProgress(3);
+        challenge.setChallengeStatusFalse();
+    }
+
+    public void deleteChallengeAll() {
+        challengeQueryRepository.deleteAllStatusFalse();
     }
 
     private Challenge challengeChecker(Integer challengeId) {
         return challengeQueryRepository.findById(challengeId)
                 .orElseThrow(() -> new ApiRequestException("존재하지 않는 챌린지입니다"));
+    }
+
+    //메인 페이지
+    public ChallengeMainDto getMainPage() {
+        List<ChallengeDetail> details = challengeDetailQueryRepository.findAllByStatusTrue();
+
+        return createChallengeMainDto(
+                sliderCollector(details),
+                popularCollector(details),
+                categoryCollector(EXERCISE, details),
+                categoryCollector(LIVINGHABITS, details),
+                categoryCollector(NODRINK, details),
+                categoryCollector(NOSMOKE, details));
+    }
+
+    private List<ChallengeSourceDto> sliderCollector(List<ChallengeDetail> details) {
+        List<Challenge> officialList = challengeQueryRepository.findAllByOfficialChallenge();
+
+        return officialList
+                .stream()
+                .map(c -> createChallengeSourceDto(c))
+                .collect(Collectors.toList());
+    }
+
+    private List<ChallengeSourceDto> popularCollector(List<ChallengeDetail> details) {
+        final int POPULAR_SIZE = 4;
+
+        List<ChallengeDetail> popularDetails = challengeDetailQueryRepository
+                .findAllPopular(PageRequest.of(0, POPULAR_SIZE));
+        return popularDetails
+                .stream()
+                .map(r -> (createChallengeSourceDto(r.getChallenge())))
+                .collect(Collectors.toList());
+    }
+
+    private List<ChallengeSourceDto> categoryCollector(ChallengeCategory category, List<ChallengeDetail> details) {
+        final int CATEGORY_SIZE = 3;
+
+        List<Challenge> challenges = details
+                .stream()
+                .map(ChallengeDetail::getChallenge)
+                .filter(challenge -> challenge.getChallengeCategory().equals(category))
+                .distinct()
+                .limit(CATEGORY_SIZE)
+                .collect(Collectors.toList());
+
+        return challenges
+                .stream()
+                .map(c -> createChallengeSourceDto(c))
+                .collect(Collectors.toList());
     }
 
 }

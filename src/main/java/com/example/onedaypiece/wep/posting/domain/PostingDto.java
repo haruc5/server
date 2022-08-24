@@ -1,6 +1,7 @@
 package com.example.onedaypiece.wep.posting.domain;
 
 import com.example.onedaypiece.wep.certification.domain.CertificationQueryDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,9 @@ public class PostingDto {
     private String postingImg;
     private String postingContent;
     private boolean postingModifyOk;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedAt;
     private Integer postingCount;
 

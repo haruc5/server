@@ -3,6 +3,7 @@ package com.example.onedaypiece.wep.posting.service;
 import com.example.onedaypiece.exception.ApiRequestException;
 import com.example.onedaypiece.wep.certification.dao.CertificationQueryRepository;
 import com.example.onedaypiece.wep.certification.dao.CertificationRepository;
+import com.example.onedaypiece.wep.certification.domain.Certification;
 import com.example.onedaypiece.wep.certification.domain.CertificationQueryDto;
 import com.example.onedaypiece.wep.challenge.dao.ChallengeRepository;
 import com.example.onedaypiece.wep.challenge.domain.Challenge;
@@ -40,7 +41,10 @@ public class PostingService {
         // 주말 여부 확인
         checkChallengeHoliday(now, challenge);
 
+        Certification certification = Certification.createCertification(posting);
+
         postingRepository.save(posting);
+        certificationRepository.save(certification);
 
         return posting.getPostingId();
     }

@@ -1,6 +1,7 @@
 package com.example.onedaypiece.wep.challengeDetail.controller;
 
 import com.example.onedaypiece.wep.challenge.domain.ChallengeListDto;
+import com.example.onedaypiece.wep.challenge.service.ChallengeService;
 import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetailDto;
 import com.example.onedaypiece.wep.challengeDetail.service.ChallengeDetailService;
 import lombok.RequiredArgsConstructor;
@@ -11,12 +12,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ChallengeDetailController {
     private final ChallengeDetailService challengeDetailService;
+    private final ChallengeService challengeService;
 
     // 챌린지 신청
-    @PostMapping("/challenge-request")
-    public String requestChallenge(@RequestBody ChallengeDetailDto challengeDetailDto) {
+    @PostMapping("/challenge-request/{challengeId}")
+    public String requestChallenge(@RequestBody ChallengeDetailDto challengeDetailDto,
+                                   @PathVariable Integer challengeId) {
+        challengeService.getChallenge(challengeId);
         challengeDetailService.requestChallenge((challengeDetailDto));
-        return "신청 완료";
+        return "request completed";
     }
 
     // 챌린지 포기
