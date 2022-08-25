@@ -2,6 +2,7 @@ package com.example.onedaypiece.wep.challenge.controller;
 
 import com.example.onedaypiece.wep.challenge.domain.Challenge;
 import com.example.onedaypiece.wep.challenge.domain.ChallengeMainDto;
+import com.example.onedaypiece.wep.challenge.domain.ChallengeSourceDto;
 import com.example.onedaypiece.wep.challenge.domain.UpdateChallengeDto;
 import com.example.onedaypiece.wep.challenge.service.ChallengeService;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,11 @@ public class ChallengeController {
     @GetMapping("api/main")
     public ChallengeMainDto getMainChallengePage() {
         return challengeService.getMainPage();
+    }
+
+    @GetMapping("api/main/hot")
+    public List<ChallengeSourceDto> getHotChallengePage() {
+        return challengeService.getMainPage().getPopular();
     }
 
     // 챌린지 생성

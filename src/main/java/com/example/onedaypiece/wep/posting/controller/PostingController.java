@@ -32,8 +32,8 @@ public class PostingController {
             file.transferTo(new File(path, file.getOriginalFilename()));
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(challengeId);
         }
+        System.out.println(challengeId);
         postingService.createPosting(createPostingDto);
         return "challenge No."+challengeId+" posting completed";
     }
