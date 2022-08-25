@@ -6,8 +6,12 @@ import com.example.onedaypiece.wep.posting.domain.UpdatePostingDto;
 import com.example.onedaypiece.wep.posting.service.PostingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,10 +21,21 @@ public class PostingController {
 
     @PostMapping("/{challengeId}/create")
     public String createPosting(@RequestBody @Valid CreatePostingDto createPostingDto,
-                                @PathVariable Integer challengeId) {
-        System.out.println(challengeId);
+                                @PathVariable Integer challengeId,
+                                @RequestParam MultipartHttpServletRequest request) throws IOException {
+        MultipartFile file = request.getFile("imageFile");
+        String image = createPostingDto.getPostingImg();
+        String path = request.getSession().getServletContext().getRealPath("/resources/static");
+        File dir = new File(path);
+        if(!dir.exists()) dir.mkdirs();
+        try {
+            file.transferTo(new File(path, file.getOriginalFilename()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(challengeId);
+        }
         postingService.createPosting(createPostingDto);
-        return "challenge ("+challengeId+") posting completed";
+        return "challenge No."+challengeId+" posting completed";
     }
 
     //포스트 리스트

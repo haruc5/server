@@ -11,18 +11,15 @@ import java.util.List;
 @Getter
 public class ChallengeListDto {
     private List<ChallengeDto> challengeList = new ArrayList<>();
-    private boolean hasNext;
 
     @Builder
-    public ChallengeListDto(List<ChallengeDto> challengeList, boolean hasNext){
+    public ChallengeListDto(List<ChallengeDto> challengeList){
         this.challengeList = challengeList;
-        this.hasNext = hasNext;
     }
 
-    public static ChallengeListDto createChallengeListDto(List<ChallengeDto> dto, boolean hasNext){
+    public static ChallengeListDto createChallengeListDto(List<ChallengeDto> dto){
         return ChallengeListDto.builder()
                 .challengeList(dto)
-                .hasNext(hasNext)
                 .build();
     }
 }

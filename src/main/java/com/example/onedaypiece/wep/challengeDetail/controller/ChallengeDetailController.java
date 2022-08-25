@@ -30,25 +30,23 @@ public class ChallengeDetailController {
     }
 
     //전체보기
-    @GetMapping("/challengeDetail/{page}")
-    public ChallengeListDto getChallenges(@PathVariable int page) {
-        return challengeDetailService.getChallengeBySearch("ALL", "ALL", 0, 0, page);
+    @GetMapping("/challengeDetail")
+    public ChallengeListDto getChallenges() {
+        return challengeDetailService.getChallengeBySearch("ALL", "ALL", 0, 0);
     }
 
     //제목으로 검색
-    @GetMapping("/search/{searchWords}/{page}")
-    public ChallengeListDto getChallengeSearchResult(@PathVariable int page,
-                                                     @PathVariable String searchWords){
-        return challengeDetailService.getChallengeSearchResult(searchWords, page);
+    @GetMapping("/search/{searchWords}")
+    public ChallengeListDto getChallengeSearchResult(@PathVariable String searchWords){
+        return challengeDetailService.getChallengeSearchResult(searchWords);
     }
 
     //소팅으로 검색
-    @GetMapping("/search/{word}/{challengeCategory}/{period}/{progress}/{page}")
+    @GetMapping("/search/{word}/{challengeCategory}/{period}/{progress}")
     public ChallengeListDto getChallengeSearchByCategoryNameAndPeriod(@PathVariable String word,
                                                                               @PathVariable String challengeCategory,
                                                                               @PathVariable int period,
-                                                                              @PathVariable int progress,
-                                                                              @PathVariable int page) {
-        return challengeDetailService.getChallengeBySearch(word, challengeCategory, period, progress, page);
+                                                                              @PathVariable int progress) {
+        return challengeDetailService.getChallengeBySearch(word, challengeCategory, period, progress);
     }
 }

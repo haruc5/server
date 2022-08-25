@@ -17,9 +17,6 @@ import com.example.onedaypiece.wep.proceed.proceed.ProceedDto;
 import com.example.onedaypiece.wep.proceed.scheduled.ChallengeScheduledDto;
 import com.example.onedaypiece.wep.proceed.scheduled.ScheduledDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +28,6 @@ import static com.example.onedaypiece.wep.challenge.domain.ChallengeDto.createCh
 import static com.example.onedaypiece.wep.proceed.end.ChallengeEndDto.createEndDto;
 import static com.example.onedaypiece.wep.proceed.proceed.ChallengeProceedDto.createProceedDto;
 import static com.example.onedaypiece.wep.proceed.scheduled.ChallengeScheduledDto.createScheduledDto;
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Service
 @RequiredArgsConstructor
@@ -67,39 +63,37 @@ public class ChallengeDetailService {
     }
 
     public ChallengeListDto getChallengeBySearch(String word, String categoryName,
-                                                 int period, int progress, int page) {
-        Pageable pageable = PageRequest.of(page - 1, SEARCH_SIZE);
-        Slice<Challenge> challengeList = challengeQueryRepository
-                .findAllBySearch(word, categoryName, period, progress, pageable);
+                                                 int period, int progress) {
+        //Pageable pageable = PageRequest.of(page - 1, SEARCH_SIZE);
+        List<Challenge> challengeList = challengeQueryRepository
+                .findAllBySearch(word, categoryName, period, progress);
 
         Map<Challenge, List<ChallengeDetail>> detailMap = challengeDetailQueryRepository
                 .findAllByChallengeList(challengeList).stream()
                 .collect(Collectors.groupingBy(ChallengeDetail::getChallenge));
 
-        return getChallengeListDto(challengeList, detailMap);
+        return getChallengeListDto(challengeList);
     }
 
-    public ChallengeListDto getChallengeSearchResult(String searchWords, int page){
-        Slice<Challenge> challengeList = challengeQueryRepository
-                .findAllByWord(searchWords.trim(), PageRequest.of(page - 1, SEARCH_SIZE));
+    public ChallengeListDto getChallengeSearchResult(String searchWords){
+        List<Challenge> challengeList = challengeQueryRepository
+                .findAllByWord(searchWords.trim());
 
         Map<Challenge, List<ChallengeDetail>> detailMap = challengeDetailQueryRepository
                 .findAllByChallengeList(challengeList)
                 .stream()
                 .collect(Collectors.groupingBy(ChallengeDetail::getChallenge));
 
-        return getChallengeListDto(challengeList, detailMap);
+        return getChallengeListDto(challengeList);
     }
 
-    private ChallengeListDto getChallengeListDto(Slice<Challenge> challengeList,
-                                                 Map<Challenge, List<ChallengeDetail>> detailMap) {
+    private ChallengeListDto getChallengeListDto(List<Challenge> challengeList) {
         List<ChallengeDto> challengeDtoList = challengeList
                 .stream()
-                .filter(c -> !isEmpty(detailMap.get(c)))
-                .map(c -> createChallengeDto(c, challengeList.getNumber()))
+                .map(c -> createChallengeDto(c, challengeList.size()))
                 .collect(Collectors.toList());
 
-        return ChallengeListDto.createChallengeListDto(challengeDtoList, challengeList.hasNext());
+        return ChallengeListDto.createChallengeListDto(challengeDtoList);
     }
 
     // 진행중인 챌린지

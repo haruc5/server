@@ -6,7 +6,6 @@ import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,14 +38,14 @@ public class ChallengeDetailQueryRepository {
                 .fetch();
     }
 
-    public List<ChallengeDetail> findAllByChallengeList(Slice<Challenge> challengeList){
+    public List<ChallengeDetail> findAllByChallengeList(List<Challenge> challengeList){
         return queryFactory.select(challengeDetail)
                 .from(challengeDetail)
 
                 .distinct()
                 .where(challengeDetail.challengeDetailStatus.isTrue(),
                         challengeDetail.challenge.challengeStatus.isTrue(),
-                        challengeDetail.challenge.in(challengeList.getContent()))
+                        challengeDetail.challenge.in(challengeList))
                 .fetch();
     }
 

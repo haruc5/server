@@ -22,11 +22,12 @@ public class PostingDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifiedAt;
     private Integer postingCount;
+    private Integer challengeId;
 
     @Builder
     public PostingDto(Integer postingId, String postingImg, String postingContent,
                       boolean postingModifyOk, LocalDateTime createdAt, LocalDateTime modifiedAt,
-                      Integer postingCount) {
+                      Integer postingCount, Integer challengeId) {
         this.postingId = postingId;
         this.postingImg = postingImg;
         this.postingContent = postingContent;
@@ -34,6 +35,7 @@ public class PostingDto {
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
         this.postingCount = postingCount;
+        this.challengeId = challengeId;
     }
 
     public static PostingDto of(PostingListQueryDto posting, List<CertificationQueryDto> certificationList) {

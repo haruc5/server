@@ -1,13 +1,10 @@
 package com.example.onedaypiece.wep.challenge.dao;
 
-import com.example.onedaypiece.util.RepositoryHelper;
 import com.example.onedaypiece.wep.challenge.domain.Challenge;
 import com.example.onedaypiece.wep.challenge.domain.ChallengeCategory;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,7 +33,7 @@ public class ChallengeQueryRepository {
                 .execute();
     }
 
-    public Slice<Challenge> findAllByWord(String words, Pageable page){
+    public List<Challenge> findAllByWord(String words){
         List<Challenge> challengeList = queryFactory
                 .selectFrom(challenge)
                 .distinct()
@@ -49,15 +46,13 @@ public class ChallengeQueryRepository {
                         challenge.challengeCategory.ne(ChallengeCategory.OFFICIAL),
                         challenge.challengeTitle.contains(words))
                 .orderBy(challenge.challengeStart.asc())
-                .offset(page.getOffset())
-                .limit(page.getPageSize() + 1)
                 .fetch();
 
-        return RepositoryHelper.toSlice(challengeList, page);
+        return challengeList;
     }
 
-    public Slice<Challenge> findAllBySearch(String word, String challengeCategory,
-                                            int period, int progress, Pageable pageable) {
+    public List<Challenge> findAllBySearch(String word, String challengeCategory,
+                                            int period, int progress) {
         List<Challenge> challengeList = queryFactory
                 .selectFrom(challenge)
                 .distinct().join(challengeDetail).on(challengeDetail.challengeDetailStatus.isTrue(),
@@ -65,11 +60,9 @@ public class ChallengeQueryRepository {
                 .where(predicateByCategoryAndPeriod(word, challengeCategory, String.valueOf(period), progress))
                 .orderBy(challenge.challengeProgress.asc(),
                         challenge.challengeStart.asc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        return RepositoryHelper.toSlice(challengeList, pageable);
+        return challengeList;
     }
 
     public List<Challenge> findAllByOfficialChallenge() {
