@@ -2,7 +2,10 @@ package com.example.onedaypiece.util;
 
 import com.example.onedaypiece.wep.challenge.domain.Challenge;
 import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail;
+import com.example.onedaypiece.wep.challengeDetail.domain.QChallengeDetail;
+import com.example.onedaypiece.wep.posting.domain.Posting;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -39,12 +42,21 @@ public class SchedulerQueryRepository {
                 .where(isHoliday(week),
                         challengeDetail.challengeDetailStatus.isTrue(),
                         challengeDetail.challenge.challengeStatus.isTrue(),
-                        challengeDetail.challenge.challengeProgress.eq(2))
+                        challengeDetail.challenge.challengeProgress.eq(2L))
                 .fetch();
     }
 
+    //챌린지 진행 상태
+    @Modifying
+    public Long updateChallengeProgress(Long progress, List<Challenge> challengeList) {
+        return queryFactory.update(challenge)
+                .set(challenge.challengeProgress, progress)
+                .where(challenge.in(challengeList))
+                .execute();
+    }
+
     //진행 상태 업데이트 목록
-    public List<ChallengeDetail> findAllByChallengeProgressLessThan(Integer progress) {
+    public List<ChallengeDetail> findAllByChallengeProgressLessThan(Long progress) {
         return queryFactory
                 .selectFrom(challengeDetail)
                 .innerJoin(challengeDetail.challenge).fetchJoin()
@@ -52,15 +64,6 @@ public class SchedulerQueryRepository {
                         challengeDetail.challenge.challengeStatus.isTrue(),
                         challengeDetail.challenge.challengeProgress.lt(progress))
                 .fetch();
-    }
-
-    //챌린지 진행 상태
-    @Modifying
-    public Long updateChallengeProgress(Integer progress, List<Challenge> challengeList) {
-        return queryFactory.update(challenge)
-                .set(challenge.challengeProgress, progress)
-                .where(challenge.in(challengeList))
-                .execute();
     }
 
     //수정 가능 여부(당일 한정)
@@ -78,8 +81,39 @@ public class SchedulerQueryRepository {
         return queryFactory.select(challenge.challengeId)
                 .from(challenge)
                 .where(challenge.challengeStatus.isTrue(),
-                        challenge.challengeProgress.eq(1),
+                        challenge.challengeProgress.eq(1L),
                         challenge.challengeTitle.eq(title))
                 .fetchFirst() == null;
     }
+
+    //포스팅 개수
+    public Long findAllByChallenge(Challenge challenge) {
+        return queryFactory.select(posting.challenge.challengeId)
+                .from(posting)
+                .where(posting.challenge.challengeStatus.isTrue(),
+                        posting.challenge.eq(challenge))
+                .fetchCount();
+    }
+
+    //포스팅 등록 인원 확인용 포스팅
+    public List<Posting> findChallengeMember() {
+        QChallengeDetail challengeDetailSub = new QChallengeDetail("challengeDetailSub");
+
+        return queryFactory.select(posting)
+                .from(posting)
+                .join(challengeDetail).on(challengeDetail.challenge.eq(posting.challenge))
+                .join(posting.challenge,challenge)
+                .where(challengeDetail.challengeDetailStatus.isTrue(),
+                        challenge.challengeStatus.isTrue(),
+                        challenge.challengeProgress.eq(2L),
+                        posting.postingApproval.isFalse(),
+                        posting.postingCount.goe(
+                                JPAExpressions.select(challengeDetailSub.challengeDetailId.count())
+                                        .from(challengeDetailSub)
+                                        .where(challengeDetailSub.challenge.challengeId.eq(challengeDetail.challenge.challengeId),
+                                                challengeDetailSub.challengeDetailStatus.isTrue())
+                        ))
+                .fetch();
+    }
+
 }

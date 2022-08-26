@@ -14,7 +14,7 @@ public class ScheduledDto {
     private String challengeTitle;
     private String challengeContent;
     private ChallengeCategory challengeCategory;
-    private Integer challengeProgress;
+    private Long challengeProgress;
     private String challengeImgUrl;
     private LocalDate challengeStart;
     private LocalDate challengeEnd;

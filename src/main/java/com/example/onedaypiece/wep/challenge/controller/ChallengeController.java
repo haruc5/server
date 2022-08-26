@@ -21,23 +21,19 @@ public class ChallengeController {
         return "기본값";
     }
 
+    // 챌린지 단건 조회
     @GetMapping("/detail/{challengeId}")
     public Challenge getChallengeDetail(@PathVariable Integer challengeId) {
         return this.challengeService.getChallenge(challengeId);
     }
 
-    @GetMapping("/list")
-    public List<Challenge> getChallenges(){
-        return this.challengeService.getChallenges();
-    }
-
     // 메인 페이지
-    @GetMapping("api/main")
+    @GetMapping("/main")
     public ChallengeMainDto getMainChallengePage() {
         return challengeService.getMainPage();
     }
 
-    @GetMapping("api/main/hot")
+    @GetMapping("/main/hot")
     public List<ChallengeSourceDto> getHotChallengePage() {
         return challengeService.getMainPage().getPopular();
     }

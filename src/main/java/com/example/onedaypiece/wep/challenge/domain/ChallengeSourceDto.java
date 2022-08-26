@@ -1,10 +1,13 @@
 package com.example.onedaypiece.wep.challenge.domain;
 
+import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -12,7 +15,9 @@ public class ChallengeSourceDto {
     private Integer challengeId;
     private String challengeTitle;
     private ChallengeCategory challengeCategory;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate challengeStart;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate challengeEnd;
     private String challengeImgUrl;
     private Integer viewCount;
@@ -37,7 +42,8 @@ public class ChallengeSourceDto {
         this.weekTag = weekTag;
     }
 
-    public static ChallengeSourceDto createChallengeSourceDto(Challenge challenge) {
+    public static ChallengeSourceDto createChallengeSourceDto(Challenge challenge,
+                                                              List<ChallengeDetail> details) {
         return ChallengeSourceDto.builder()
                 .challengeId(challenge.getChallengeId())
                 .challengeTitle(challenge.getChallengeTitle())

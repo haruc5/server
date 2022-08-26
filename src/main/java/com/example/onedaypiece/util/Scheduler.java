@@ -4,11 +4,13 @@ import com.example.onedaypiece.wep.challenge.domain.Challenge;
 import com.example.onedaypiece.wep.challengeDetail.dao.ChallengeDetailRepository;
 import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail;
 import com.example.onedaypiece.wep.posting.dao.PostingRepository;
+import com.example.onedaypiece.wep.posting.domain.Posting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
 import java.util.List;
@@ -17,14 +19,42 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class Scheduler {
-    private final PostingRepository postingRepository;
     private final ChallengeDetailRepository challengeDetailRepository;
+    private final PostingRepository postingRepository;
     private final SchedulerQueryRepository schedulerQueryRepository;
-
     private static final String SCHEDULE_MODE = System.getProperty("schedule.mode");
 
     LocalDateTime today;
 
+    @Scheduled(cron = "01 0 0 * * *") // 초, 분, 시, 일, 월, 주 순서
+    @Transactional
+    public void notWrittenChallengerKick() {
+
+        // nginx 사용시에 여러 인스턴스 모두에서 update 되는 것을 방지.
+        if (isNotScheduleMode()) {
+            return;
+        }
+        // today 호출, 스케줄러 실행시의 시간으로 변경.
+        initializeToday();
+
+        // 주말 여부 체크를 위한 week 변수 생성
+        int week = today.getDayOfWeek().getValue();
+
+        // 주말 여부를 체크해서 챌린지 레코드를 가져옴.
+        List<Integer> challengeId = schedulerQueryRepository.findAllByChallenge(week);
+    }
+
+    @Scheduled(cron = "04 0 0 * * *") // 초, 분, 시, 일, 월, 주 순서
+    @Transactional
+    public void changePostingApproval() {
+        if (isNotScheduleMode()) {
+            return;
+        }
+        // 진행중인 챌린지에서 포스팅 작성
+        List<Posting> approvalPostingList = schedulerQueryRepository.findChallengeMember();
+        // 포스팅의 인증여부 업데이트.
+        int postingApprovalUpdate = postingRepository.updatePostingApproval(approvalPostingList);
+    }
     @Scheduled(cron = "05 0 0 * * *") // 초, 분, 시, 일, 월, 주 순서
     @Transactional
     public void updatePostingModifyOk() {
@@ -45,9 +75,9 @@ public class Scheduler {
         if (isNotScheduleMode()) {
             return;
         }
-        List<ChallengeDetail> recordList = schedulerQueryRepository.findAllByChallengeProgressLessThan(3);
+        List<ChallengeDetail> detailList = schedulerQueryRepository.findAllByChallengeProgressLessThan(3L);
 
-        List<Challenge> challengeList = recordList
+        List<Challenge> challengeList = detailList
                 .stream()
                 .map(ChallengeDetail::getChallenge)
                 .distinct()
@@ -71,22 +101,27 @@ public class Scheduler {
     }
 
     private void challengeStart(List<Challenge> startList) {
-        Long result1 = schedulerQueryRepository.updateChallengeProgress(2, startList);
+        Long progress2 = schedulerQueryRepository.updateChallengeProgress(2L, startList);
     }
 
     private void challengeEnd(List<Challenge> endList) {
-        Long result2 = schedulerQueryRepository.updateChallengeProgress(3, endList);
+        Long progress3 = schedulerQueryRepository.updateChallengeProgress(3L, endList);
     }
 
     private boolean isChallengeTimeToStart(Challenge c) {
-        return c.getChallengeProgress() == 1 && c.getChallengeStart().isEqual(ChronoLocalDate.from(today));
+        return c.getChallengeProgress() == 1L && c.getChallengeStart().isEqual(ChronoLocalDate.from(today));
     }
 
     private boolean isChallengeTimeToEnd(Challenge c) {
-        return c.getChallengeProgress() == 2 && c.getChallengeEnd().isBefore(ChronoLocalDate.from(today));
+        return c.getChallengeProgress() == 2L && c.getChallengeEnd().isBefore(ChronoLocalDate.from(today));
     }
 
     private boolean isNotScheduleMode() {
         return null == SCHEDULE_MODE || !SCHEDULE_MODE.equals("on");
     }
+
+    public void initializeToday() {
+        today = LocalDate.now().atStartOfDay();
+    }
+
 }

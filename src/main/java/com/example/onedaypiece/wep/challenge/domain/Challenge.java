@@ -46,7 +46,7 @@ public class Challenge extends Timestamped implements Serializable {
     private boolean challengeStatus; // 삭제 여부
 
     @Column(name = "challenge_progress", nullable = false)
-    private Integer challengeProgress;
+    private Long challengeProgress;
 
     @Column(name = "challenge_auth" ,nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -79,7 +79,7 @@ public class Challenge extends Timestamped implements Serializable {
         this.challengeStart = challengeStart;
         this.challengeEnd = challengeEnd;
         this.challengeStatus = true;
-        this.challengeProgress = 0;
+        this.challengeProgress = 1L;
         this.challengeAuth = challengeAuth;
         this.challengeAuthMethod = challengeAuthMethod;
         this.challengeContent = challengeContent;
@@ -115,7 +115,7 @@ public class Challenge extends Timestamped implements Serializable {
         this.challengeStatus = false;
     }
 
-    public void updateChallengeProgress(Integer challengeProgress) {
+    public void updateChallengeProgress(Long challengeProgress) {
         this.challengeProgress = challengeProgress;
     }
 
@@ -140,5 +140,4 @@ public class Challenge extends Timestamped implements Serializable {
             this.weekTag = "4주 이상";
         }
     }
-
 }

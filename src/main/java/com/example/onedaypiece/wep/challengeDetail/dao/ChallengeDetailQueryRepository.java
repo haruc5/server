@@ -1,7 +1,6 @@
 package com.example.onedaypiece.wep.challengeDetail.dao;
 
 import com.example.onedaypiece.wep.challenge.domain.Challenge;
-import com.example.onedaypiece.wep.challenge.domain.ChallengeCategory;
 import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class ChallengeDetailQueryRepository {
                 .fetch();
     }
 
-    public List<ChallengeDetail> findAllByProgress(Integer progress) {
+    public List<ChallengeDetail> findAllByProgress(Long progress) {
         return queryFactory
                 .selectFrom(challengeDetail)
                 .join(challengeDetail.challenge, challenge).fetchJoin()
@@ -55,9 +54,9 @@ public class ChallengeDetailQueryRepository {
                 .join(challengeDetail.challenge).fetchJoin()
                 .where(challengeDetail.challengeDetailStatus.isTrue(),
                         challengeDetail.challenge.challengeStatus.isTrue(),
-                        challengeDetail.challenge.challengeProgress.eq(1),
-                        challengeDetail.challenge.challengeCategory.ne(ChallengeCategory.OFFICIAL),
-                        challengeDetail.challenge.challengePassword.eq(""))
+                        challengeDetail.challenge.challengeProgress.eq(1L),
+                        challengeDetail.challenge.challengePassword.eq(""),
+                        challengeDetail.challenge.viewCount.gt(0))
                 .groupBy(challengeDetail.challenge.challengeId)
                 .orderBy(challengeDetail.challenge.viewCount.desc())
                 .offset(page.getOffset())
@@ -68,22 +67,11 @@ public class ChallengeDetailQueryRepository {
     public List<ChallengeDetail> findAllByStatusTrue() {
         return queryFactory.selectFrom(challengeDetail)
                 .join(challengeDetail.challenge).fetchJoin()
-
                 .where(challengeDetail.challengeDetailStatus.isTrue(),
                         challengeDetail.challenge.challengeStatus.isTrue(),
-                        challengeDetail.challenge.challengeProgress.eq(1),
+                        challengeDetail.challenge.challengeProgress.eq(1L),
                         challengeDetail.challenge.challengePassword.eq(""))
                 .orderBy(challengeDetail.modifiedAt.desc())
                 .fetch();
-    }
-
-    public Long countByChallenge(Challenge challenge) {
-        return queryFactory
-                .select(challengeDetail.challengeDetailId)
-                .from(challengeDetail)
-                .where(challengeDetail.challengeDetailStatus.isTrue(),
-                        challengeDetail.challenge.challengeStatus.isTrue(),
-                        challengeDetail.challenge.eq(challenge))
-                .fetchCount();
     }
 }

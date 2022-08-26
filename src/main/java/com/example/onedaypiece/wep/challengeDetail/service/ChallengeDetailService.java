@@ -64,7 +64,6 @@ public class ChallengeDetailService {
 
     public ChallengeListDto getChallengeBySearch(String word, String categoryName,
                                                  int period, int progress) {
-        //Pageable pageable = PageRequest.of(page - 1, SEARCH_SIZE);
         List<Challenge> challengeList = challengeQueryRepository
                 .findAllBySearch(word, categoryName, period, progress);
 
@@ -99,7 +98,7 @@ public class ChallengeDetailService {
     // 진행중인 챌린지
     public ChallengeProceedDto getProceed(){
         //본인이 참여한 챌린지 기록리스트  1: 진행 예정, 2: 진행 중, 3 : 진행 완료
-        List<ChallengeDetail> targetList = challengeDetailQueryRepository.findAllByProgress(2);
+        List<ChallengeDetail> targetList = challengeDetailQueryRepository.findAllByProgress(2L);
 
         // 본인이 참여한 챌린지 기록리스트 -> 챌린지 가져옴
         List<Challenge> proceeding = targetList.stream()
@@ -118,7 +117,7 @@ public class ChallengeDetailService {
     // 예정인 챌린지
     public ChallengeScheduledDto getScheduled(){
         //본인이 참여한 챌린지 리스트  1: 진행 예정, 2: 진행 중, 3 : 진행 완료
-        List<ChallengeDetail> targetList = challengeDetailQueryRepository.findAllByProgress(1);
+        List<ChallengeDetail> targetList = challengeDetailQueryRepository.findAllByProgress(1L);
 
         List<Challenge> scheduled = targetList.stream()
                 .map(challengeDetail -> challengeDetail.getChallenge()).collect(Collectors.toList());
@@ -134,7 +133,7 @@ public class ChallengeDetailService {
     // 종료된 챌린지
     public ChallengeEndDto getEnd(){
         //본인이 참여한 챌린지 리스트  1: 진행 예정, 2: 진행 중, 3 : 진행 완료
-        List<ChallengeDetail> targetList = challengeDetailQueryRepository.findAllByProgress(3);
+        List<ChallengeDetail> targetList = challengeDetailQueryRepository.findAllByProgress(3L);
 
         List<Challenge> end = targetList.stream()
                 .map(challengeDetail -> challengeDetail.getChallenge()).collect(Collectors.toList());

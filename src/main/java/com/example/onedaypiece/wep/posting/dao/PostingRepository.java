@@ -11,4 +11,8 @@ public interface PostingRepository extends JpaRepository<Posting, Integer> {
     @Modifying(clearAutomatically = true)
     @Query("update Posting p set p.postingModifyOk = false where p.postingId in :postingIdList")
     int updatePostingModifyOk(List<Integer> postingIdList);
+
+    @Modifying(clearAutomatically = true)
+    @Query("update Posting p set p.postingApproval = true  where p in :updatePostingId")
+    int updatePostingApproval(List<Posting> updatePostingId);
 }

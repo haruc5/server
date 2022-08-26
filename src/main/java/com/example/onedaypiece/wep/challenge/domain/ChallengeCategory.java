@@ -4,6 +4,5 @@ public enum ChallengeCategory {
     NODRINK,
     NOSMOKE,
     EXERCISE,
-    LIVINGHABITS,
-    OFFICIAL
+    LIVINGHABITS
 }

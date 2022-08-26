@@ -30,11 +30,6 @@ public class ChallengeService {
     private final ChallengeDetailRepository challengeDetailRepository;
     private final ChallengeDetailQueryRepository challengeDetailQueryRepository;
 
-    // 챌린지 전체 조회
-    public List<Challenge> getChallenges() {
-        return challengeRepository.findAll();
-    }
-
     // 챌린지 단건조회(조회수 포함)
     public Challenge getChallenge(Integer challengeId) {
         Optional<Challenge> ViewChallenge = this.challengeQueryRepository.findById(challengeId);
@@ -73,7 +68,7 @@ public class ChallengeService {
 
         List<ChallengeDetail> detailList = challengeDetailRepository.findAllByChallengeAndChallengeDetailStatusTrue(challenge);
         detailList.forEach(ChallengeDetail::setStatusFalse);
-        challenge.updateChallengeProgress(3);
+        challenge.updateChallengeProgress(3L);
         challenge.setChallengeStatusFalse();
     }
 
@@ -91,21 +86,11 @@ public class ChallengeService {
         List<ChallengeDetail> details = challengeDetailQueryRepository.findAllByStatusTrue();
 
         return createChallengeMainDto(
-                sliderCollector(details),
                 popularCollector(details),
                 categoryCollector(EXERCISE, details),
                 categoryCollector(LIVINGHABITS, details),
                 categoryCollector(NODRINK, details),
                 categoryCollector(NOSMOKE, details));
-    }
-
-    private List<ChallengeSourceDto> sliderCollector(List<ChallengeDetail> details) {
-        List<Challenge> officialList = challengeQueryRepository.findAllByOfficialChallenge();
-
-        return officialList
-                .stream()
-                .map(c -> createChallengeSourceDto(c))
-                .collect(Collectors.toList());
     }
 
     private List<ChallengeSourceDto> popularCollector(List<ChallengeDetail> details) {
@@ -115,7 +100,7 @@ public class ChallengeService {
                 .findAllPopular(PageRequest.of(0, POPULAR_SIZE));
         return popularDetails
                 .stream()
-                .map(r -> (createChallengeSourceDto(r.getChallenge())))
+                .map(r -> (createChallengeSourceDto(r.getChallenge(), details)))
                 .collect(Collectors.toList());
     }
 
@@ -132,7 +117,7 @@ public class ChallengeService {
 
         return challenges
                 .stream()
-                .map(c -> createChallengeSourceDto(c))
+                .map(c -> createChallengeSourceDto(c, details))
                 .collect(Collectors.toList());
     }
 
