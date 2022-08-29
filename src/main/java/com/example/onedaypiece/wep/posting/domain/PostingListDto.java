@@ -16,6 +16,7 @@ public class PostingListDto {
     @Builder
     public PostingListDto(List<PostingDto> postList, boolean hasNext){
         this.postList = postList;
+        this.hasNext = hasNext;
     }
 
     public static PostingListDto createPostingListDto(List<PostingDto> postingDto, boolean hasNext){
