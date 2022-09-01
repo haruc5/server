@@ -1,10 +1,10 @@
 package com.example.onedaypiece.util;
 
-import com.example.onedaypiece.wep.challenge.domain.Challenge;
-import com.example.onedaypiece.wep.challengeDetail.dao.ChallengeDetailRepository;
-import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail;
-import com.example.onedaypiece.wep.posting.dao.PostingRepository;
-import com.example.onedaypiece.wep.posting.domain.Posting;
+import com.example.onedaypiece.web.challenge.domain.Challenge;
+import com.example.onedaypiece.web.challengeDetail.dao.ChallengeDetailRepository;
+import com.example.onedaypiece.web.challengeDetail.domain.ChallengeDetail;
+import com.example.onedaypiece.web.posting.dao.PostingRepository;
+import com.example.onedaypiece.web.posting.domain.Posting;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

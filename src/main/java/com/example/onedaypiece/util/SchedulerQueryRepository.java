@@ -1,9 +1,9 @@
 package com.example.onedaypiece.util;
 
-import com.example.onedaypiece.wep.challenge.domain.Challenge;
-import com.example.onedaypiece.wep.challengeDetail.domain.ChallengeDetail;
-import com.example.onedaypiece.wep.challengeDetail.domain.QChallengeDetail;
-import com.example.onedaypiece.wep.posting.domain.Posting;
+import com.example.onedaypiece.web.challenge.domain.Challenge;
+import com.example.onedaypiece.web.challengeDetail.domain.ChallengeDetail;
+import com.example.onedaypiece.web.challengeDetail.domain.QChallengeDetail;
+import com.example.onedaypiece.web.posting.domain.Posting;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.example.onedaypiece.wep.challenge.domain.QChallenge.challenge;
-import static com.example.onedaypiece.wep.challengeDetail.domain.QChallengeDetail.challengeDetail;
-import static com.example.onedaypiece.wep.posting.domain.QPosting.posting;
+import static com.example.onedaypiece.web.challenge.domain.QChallenge.challenge;
+import static com.example.onedaypiece.web.challengeDetail.domain.QChallengeDetail.challengeDetail;
+import static com.example.onedaypiece.web.posting.domain.QPosting.posting;
 
 @RequiredArgsConstructor
 @Repository

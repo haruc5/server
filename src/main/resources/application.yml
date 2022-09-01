@@ -1,3 +1,6 @@
+resource:
+  path: C:/work/oneday-piece/src/main/resources/static/
+
 server:
   port: 8085
 spring:
@@ -8,20 +11,20 @@ spring:
     password:
   servlet:
     multipart:
-      max-file-size : 20MB
-      max-request-size : 100MB
+      enabled: true
+      location: ${java.io.tmpdir}
+      max-file-size: 20MB
+      max-request-size: 100MB
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
         format_sql: true
         use_sql_comments: true
   mvc:
-    view:
-      prefix: /WEB-INF/views/
-      suffix: .jsp
+   static-path-pattern: /static/**
 logging:
   level:
     org:
@@ -29,3 +32,4 @@ logging:
         type:
           descriptor:
             sql: trace
+
