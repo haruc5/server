@@ -11,7 +11,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
-@EnableWebMvc
 @EnableScheduling
 @SpringBootApplication
 public class OnedayPieceApplication {

@@ -1,6 +1,5 @@
 resource:
-  path: C:/work/oneday-piece/src/main/resources/static/
-
+  path: C:/work/uploads/
 server:
   port: 8085
 spring:
@@ -23,8 +22,10 @@ spring:
         show_sql: true
         format_sql: true
         use_sql_comments: true
-  mvc:
-   static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations:
+        - file:///c:/work/uploads/
 logging:
   level:
     org:

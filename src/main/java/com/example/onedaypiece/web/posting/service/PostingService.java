@@ -32,9 +32,6 @@ public class PostingService {
     private final ChallengeRepository challengeRepository;
     private final PostingQueryRepository postingQueryRepository;
 
-//    @Value("${resource}")
-//    private String path;
-
     //인증 저장
     public Integer createPosting(CreatePostingDto createPostingDto) {
         Challenge challenge = getChallenge(createPostingDto.getChallengeId());
@@ -52,18 +49,6 @@ public class PostingService {
 
         return posting.getPostingId();
     }
-
-//    public String upload(MultipartFile file) throws IOException {
-//        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-//        File upload = new File(path, fileName);
-//        try {
-//            file.transferTo(upload);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return fileName;
-//    }
 
     //인증 리스트
     public PostingListDto getPosting(Integer page, Integer challengeId) {

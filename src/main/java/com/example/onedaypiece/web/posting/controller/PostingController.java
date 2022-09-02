@@ -77,7 +77,7 @@ public class PostingController {
         String saveFileName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
         String filePath = path + File.separator + saveFileName;
 
-        System.out.println(fileName);
+        System.out.println(path);
         try {
             image.transferTo(new File(filePath));
         } catch (IOException e) {
