@@ -1,5 +1,5 @@
 resource:
-  path: /tmp/uploads
+  path: //tmp//uploads
 server:
   port: 8085
 spring:
