@@ -41,9 +41,7 @@ public class PostingController {
         String filePath = path + File.separator + saveFileName;
         imageSrc.transferTo(new File(filePath));
 
-        String fileUrl = "http://localhost:8085/" + saveFileName;
-
-        createPostingDto.setPostingImg(fileUrl);
+        createPostingDto.setPostingImg(saveFileName);
         postingService.createPosting(createPostingDto);
         return "challenge No." + challengeId + " posting completed";
     }

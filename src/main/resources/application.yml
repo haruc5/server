@@ -1,13 +1,13 @@
 resource:
-  path: C:/work/uploads/
+  path: /tmp/uploads
 server:
   port: 8085
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/oneday-piece?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull
-    username: root
-    password:
+    username: sbsst
+    password: sbs123414
   servlet:
     multipart:
       enabled: true
@@ -16,7 +16,7 @@ spring:
       max-request-size: 100MB
   jpa:
     hibernate:
-      ddl-auto: update
+      #ddl-auto: create
     properties:
       hibernate:
         show_sql: true
@@ -33,4 +33,15 @@ logging:
         type:
           descriptor:
             sql: trace
-
+cloud:
+  aws:
+    credentials:
+      assessKey: AKIAUR5I2KF6YG5VQ6MB
+      secretKey: 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
+    s3:
+      bucket:
+        dir: /
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
