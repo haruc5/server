@@ -1,5 +1,7 @@
 package com.example.onedaypiece.web.posting.controller;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.onedaypiece.web.posting.domain.CreatePostingDto;
 import com.example.onedaypiece.web.posting.domain.PostingListDto;
 import com.example.onedaypiece.web.posting.domain.UpdatePostingDto;
@@ -24,24 +26,35 @@ public class PostingController {
     @Value("${resource.path}")
     private String path;
 
+    // 추가부분
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    private final AmazonS3 amazonS3;
+
     @PostMapping("{challengeId}/create")
     public String createPosting(@RequestPart(value = "createPostingDto") CreatePostingDto createPostingDto,
                                 @RequestPart(value = "imageSrc") MultipartFile imageSrc,
                                 @PathVariable Integer challengeId) throws IOException {
-        String fileName = imageSrc.getOriginalFilename();
+//        String fileName = imageSrc.getOriginalFilename();
 
-        if(!new File(path).exists()) {
-            try {
-                new File(path).mkdirs();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        String saveFileName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
-        String filePath = path + File.separator + saveFileName;
-        imageSrc.transferTo(new File(filePath));
+//        if(!new File(path).exists()) {
+//            try {
+//                new File(path).mkdirs();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        String saveFileName = UUID.randomUUID() + fileName.substring(fileName.lastIndexOf("."));
+//        String filePath = path + File.separator + saveFileName;
+//        imageSrc.transferTo(new File(filePath));
+        String s3FileName = String.valueOf(UUID.randomUUID());
+        ObjectMetadata objMeta = new ObjectMetadata();
+        objMeta.setContentLength(imageSrc.getInputStream().available());
 
-        createPostingDto.setPostingImg(saveFileName);
+        amazonS3.putObject(bucket, s3FileName, imageSrc.getInputStream(), objMeta);
+
+        createPostingDto.setPostingImg(s3FileName);
         postingService.createPosting(createPostingDto);
         return "challenge No." + challengeId + " posting completed";
     }
@@ -82,5 +95,11 @@ public class PostingController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(fileName);
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(fileName);
+    }
+
+    // aws test
+    @PostMapping("/awsUploadTest")
+    public void awsUploadTest(@RequestPart(value = "imageSrc") MultipartFile imageSrc) throws IOException {
+        postingService.awsUploadTest(imageSrc);
     }
 }

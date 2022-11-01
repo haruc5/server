@@ -1,5 +1,7 @@
 package com.example.onedaypiece.web.posting.service;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.example.onedaypiece.exception.ApiRequestException;
 import com.example.onedaypiece.web.certification.dao.CertificationQueryRepository;
 import com.example.onedaypiece.web.certification.dao.CertificationRepository;
@@ -11,15 +13,19 @@ import com.example.onedaypiece.web.posting.dao.PostingQueryRepository;
 import com.example.onedaypiece.web.posting.dao.PostingRepository;
 import com.example.onedaypiece.web.posting.domain.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -31,6 +37,11 @@ public class PostingService {
     private final CertificationQueryRepository certificationQueryRepository;
     private final ChallengeRepository challengeRepository;
     private final PostingQueryRepository postingQueryRepository;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    private final AmazonS3 amazonS3;
 
     //인증 저장
     public Integer createPosting(CreatePostingDto createPostingDto) {
@@ -118,5 +129,14 @@ public class PostingService {
                 throw new ApiRequestException("주말에 작성 불가능한 챌린지 입니다!");
             }
         }
+    }
+
+    // aws test
+    public void awsUploadTest(MultipartFile imageSrc) throws IOException {
+        String s3FileName = String.valueOf(UUID.randomUUID());
+        ObjectMetadata objMeta = new ObjectMetadata();
+        objMeta.setContentLength(imageSrc.getInputStream().available());
+
+        amazonS3.putObject(bucket, s3FileName, imageSrc.getInputStream(), objMeta);
     }
 }
